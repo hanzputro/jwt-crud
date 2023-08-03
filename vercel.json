@@ -1,3 +1,16 @@
 {
-  "rewrites": [{ "source": "/(.*)", "destination": "/client/" }]
+  "routes": [
+    {
+      "src": "^/static/(.*)",
+      "dest": "/client/static/$1"
+    },
+    {
+      "src": "/(.*)\\.png",
+      "dest": "/client/$1.png"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/client/index.html"
+    }
+  ]
 }

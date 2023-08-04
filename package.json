@@ -10,7 +10,7 @@
     "start:client": "lerna run start --scope=client",
     "start:server": "lerna run start --scope=server",
     "start:both": "lerna run --parallel start",
-    "build:client": "lerna run build --scope=client"
+    "build": "lerna run build --scope=client && yarn start:server"
   },
   "devDependencies": {
     "lerna": "^7.1.4"

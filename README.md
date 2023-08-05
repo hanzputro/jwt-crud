@@ -1,8 +1,14 @@
 WIP
 
 # MONOREPO
+make server and client work together
 
-# JWT CRUD Server
+Dependencies needed:
+
+- [lerna](https://lerna.js.org/) modern build system for managing and publishing multiple JavaScript/TypeScript packages from the same repository
+
+
+## JWT CRUD Server
 
 This server using mongoDB with graphql.
 
@@ -13,7 +19,9 @@ Dependencies needed:
 - [mongoose](https://mongoosejs.com/) Mongoose is a JavaScript object-oriented programming library that creates a connection between MongoDB and the Node.js  
 
 
-# JWT CRUD Client
+
+
+## JWT CRUD Client
 
 This client provides setup to get React working in Vite with HMR and some depedencies for best performance in deployment.
 

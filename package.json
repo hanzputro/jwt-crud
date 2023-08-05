@@ -7,10 +7,10 @@
     "packages/*"
   ],
   "scripts": {
-    "start:client": "lerna run start --scope=client",
-    "start:server": "lerna run start --scope=server",
-    "start:both": "lerna run --parallel start",
-    "build": "lerna run build --scope=client && yarn start:server"
+    "dev:client": "lerna run start --scope=client",
+    "dev:server": "lerna run start --scope=server",
+    "dev:both": "lerna run --parallel start",
+    "build": "lerna run build --scope=client"
   },
   "devDependencies": {
     "lerna": "^7.1.4"

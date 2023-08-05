@@ -1,4 +1,4 @@
-const { ApolloError } = require("apollo-server-errors");
+const { GraphQLError } = require("graphql");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 
@@ -6,15 +6,23 @@ const User = require("../../models/User");
 
 module.exports = {
   Query: {
-    user: (_, { ID }) => User.findById(ID),
+    async getUser(_, { ID }) {
+      const user = await User.findOne({ ID }).populate("products");
+      return user;
+    },
+
+    async getUsers() {
+      const users = await User.find({}).populate("products");
+      return users;
+    },
   },
 
   Mutation: {
-    async inputRegister(_, { inputRegister: { username, email, password } }) {
+    async createRegister(_, { username, email, password }) {
       // check old user
       const oldUser = await User.findOne({ email });
       if (oldUser) {
-        throw new ApolloError("Email already registered!");
+        throw new GraphQLError("Email already registered!");
       }
 
       // encrypt password
@@ -48,7 +56,7 @@ module.exports = {
       };
     },
 
-    async inputLogin(_, { inputLogin: { email, password } }, { req }) {
+    async createLogin(_, { email, password }, { req }) {
       // find user
       const user = await User.findOne({ email });
       // check password
@@ -56,7 +64,7 @@ module.exports = {
 
       if (user) {
         if (!matchPassword) {
-          throw new ApolloError(`Incorrect password!`, "INCORRECT_PASSWORD");
+          throw new GraphQLError(`Incorrect password!`, "INCORRECT_PASSWORD");
         }
 
         // access token
@@ -73,10 +81,9 @@ module.exports = {
         const cookie = req.response.cookie("refreshToken", accessToken, {
           maxAge: oneHour,
           httpOnly: true, // cookie is only accessible by the server not the client side
-          // secure: process.env.NODE_ENV === 'prod', // only transferred over https
+          secure: process.env.NODE_ENV === "production", // only transferred over https
           // sameSite: true, // only sent for requests to the same FQDN as the domain in the cookie
         });
-        console.log("cookie:", cookie);
 
         // saven token
         user.token = accessToken;
@@ -86,7 +93,7 @@ module.exports = {
           ...user._doc,
         };
       } else {
-        throw new ApolloError("Incorrect email!", "INCORRECT_EMAIL");
+        throw new GraphQLError("Incorrect email!", "INCORRECT_EMAIL");
       }
     },
   },

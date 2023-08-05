@@ -1,52 +1,50 @@
-const { gql } = require("apollo-server");
+const { gql } = require("graphql-tag");
 
 module.exports = gql`
   type User {
+    _id: ID!
     username: String
     email: String
     password: String
     token: String
+    products: [Product]
   }
 
   type Product {
+    _id: ID!
     name: String
-    stock: Int
-    buyPrice: Int
-    sellPrice: Int
-    image: String
-  }
-
-  input InputRegister {
-    username: String
-    email: String
-    password: String
-  }
-
-  input InputLogin {
-    email: String
-    password: String
-  }
-
-  input InputProduct {
-    name: String
-    stock: Int
-    buyPrice: Int
-    sellPrice: Int
+    stock: Float
+    buyPrice: Float
+    sellPrice: Float
     image: String
   }
 
   type Query {
-    user: User
-    product(id: ID!): Product
+    getUser(userId: ID!): User!
+    getUsers: [User!]!
   }
 
   type Mutation {
-    inputRegister(inputRegister: InputRegister): User
-    inputLogin(inputLogin: InputLogin): User
-    inputProduct(inputProduct: InputProduct): Product
+    createRegister(username: String!, email: String!, password: String!): User!
+    createLogin(email: String!, password: String!): User!
+    createProduct(
+      userId: String!
+      name: String!
+      stock: Float!
+      buyPrice: Float!
+      sellPrice: Float!
+      image: String
+    ): Product!
 
-    updateProduct(id: ID!, updateProduct: InputProduct): Product
+    updateProduct(
+      productId: String!
+      name: String
+      stock: Float
+      buyPrice: Float
+      sellPrice: Float
+      image: String
+    ): Product!
 
-    deleteProduct(id: ID!): Product
+    deleteProduct(productId: String!): Product!
   }
 `;

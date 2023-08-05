@@ -1,73 +1,51 @@
-const { ApolloServer, gql, UserInputError } = require("apollo-server");
-const { ApolloError } = require("apollo-server-errors");
-const jwt = require("jsonwebtoken");
-const bcrypt = require("bcryptjs");
+const { Types } = require("mongoose");
 
+const User = require("../../models/User");
 const Product = require("../../models/Product");
 
 module.exports = {
-  Query: {
-    product: (id) => Product.findById(id),
-  },
-
   Mutation: {
-    async inputProduct(
+    async createProduct(
       _,
-      { inputProduct: { name, stock, buyPrice, sellPrice, image } }
+      { userId, name, stock, buyPrice, sellPrice, image }
     ) {
       const newProduct = new Product({
-        name: name,
-        stock: stock,
-        buyPrice: buyPrice,
-        sellPrice: sellPrice,
-        image: image,
+        userId,
+        name,
+        stock,
+        buyPrice,
+        sellPrice,
+        image,
       });
+      const createdProduct = await newProduct.save();
+      const user = await User.findById(Types.ObjectId(userId));
+      user.products.push(createdProduct._id);
+      await user.save();
 
-      const res = await newProduct.save();
-
-      return {
-        id: res.id,
-        ...res._doc,
-      };
+      return createdProduct;
     },
 
     async updateProduct(
       _,
-      { id, updateProduct: { name, stock, buyPrice, sellPrice, image } }
+      { productId, name, stock, buyPrice, sellPrice, image }
     ) {
-      // find product
-      const product = await Product.findOne({ id });
-      if (!product) {
-        throw new ApolloError("Product not exist!");
-      }
-
-      const updateProduct = new Product({
-        name: name,
-        stock: stock,
-        buyPrice: buyPrice,
-        sellPrice: sellPrice,
-        image: image,
+      const editedProduct = await Product.findById(Types.ObjectId(productId));
+      await editedProduct.update({
+        name,
+        stock,
+        buyPrice,
+        sellPrice,
+        image,
       });
 
-      const res = await product.updateOne({ id }, { updateProduct });
-
-      return {
-        id: res.id,
-        ...res._doc,
-      };
+      return editedProduct;
     },
 
-    async deleteProduct(_, { id }) {
-      // find product
-      const product = await Product.findOne({ id });
-      if (!product) {
-        throw new ApolloError("Product not exist!");
-      }
+    async deleteProduct(_, { productId }) {
+      const deleteProduct = await Product.findById(Types.ObjectId(productId));
+      await deleteProduct.delete();
 
-      // delete product
-      product.remove();
-
-      return null;
+      return deleteProduct;
     },
   },
 };

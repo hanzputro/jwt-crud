@@ -1,14 +1,29 @@
 WIP
 
-# MONOREPO
-make server and client work together
+Purpose
 
-Dependencies needed:
+This repo is intended to demonstrate how we can leverage lerna to spin up a single dev environment that consists of multiple Apps in one go (monorepo).
 
-- [lerna](https://lerna.js.org/) modern build system for managing and publishing multiple JavaScript/TypeScript packages from the same repository
+Expectation
+
+From a dev perspective, you should now be able to:
+
+    Scaffold entire dev environment with just one "npm dev:both" or "yarn dev:both" command
+    Get the same Hot Module Reload (HMR) development experience
+
+Samples Included
+
+    server (Node JS)
+    client (React App + vite)
+
+How To Run
+
+    Run "npm install" or "yarn" in the root of the folder to install all the dependencies needed.
+    Run "npm dev:both" or "yarn dev:both" to spin up all the services defined in the lerna.json
+    You can now access apps each other in dev mode a. localhost:4000 (nodeJS) b. localhost:3000 (ReactJS + Vite)
 
 
-## JWT CRUD Server
+## Server
 
 This server using mongoDB with graphql.
 
@@ -19,9 +34,7 @@ Dependencies needed:
 - [mongoose](https://mongoosejs.com/) Mongoose is a JavaScript object-oriented programming library that creates a connection between MongoDB and the Node.js  
 
 
-
-
-## JWT CRUD Client
+## Client
 
 This client provides setup to get React working in Vite with HMR and some depedencies for best performance in deployment.
 

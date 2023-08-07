@@ -1,25 +1,29 @@
 import Login from "./pages/Login";
-import Home from "./pages/Home";
 import Register from "./pages/Register";
 import client from "./apolloClient";
 import { ApolloProvider } from "@apollo/client";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Dashboard from "./pages/dashboard";
+import { store } from "./store";
+import { Provider as ReduxProvider } from "react-redux";
 
 // access needed:
-// Client
-// Authorization Context
+// accessToken(30s) & refreshToken(1h)
+// Authorization
 // Routes Protection
 
 const App = () => {
   return (
     <ApolloProvider client={client}>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Login />} />
-          <Route path="/home" element={<Home />} />
-          <Route path="/register" element={<Register />} />
-        </Routes>
-      </BrowserRouter>
+      <ReduxProvider store={store}>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Login />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/register" element={<Register />} />
+          </Routes>
+        </BrowserRouter>
+      </ReduxProvider>
     </ApolloProvider>
   );
 };

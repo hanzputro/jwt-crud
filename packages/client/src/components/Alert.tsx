@@ -1,13 +1,13 @@
 import { AiFillCloseCircle, AiOutlineCheckCircle } from "react-icons/ai";
 
 interface AlertType {
-  message: string;
+  message: string | any;
   type: "alert-success" | "alert-error";
 }
 
 const Alert = ({ message, type }: AlertType) => {
   return (
-    <div className="fixed w-full p-5 top-0 flex justify-end">
+    <div className="fixed w-full p-5 top-0 flex justify-end z-30">
       <div className={`alert w-full max-w-[400px] p-1 ${type}`}>
         {type == "alert-error" ? (
           <AiFillCloseCircle className="h-7 w-7" />

@@ -5,7 +5,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import { Link, useNavigate } from "react-router-dom";
-import { LOGIN_USER } from "../services/mutation/user";
+import { LOGIN_USER } from "../features/mutation/user";
 import AlertGroup from "../components/AlertGroup";
 
 const schemaLogin = yup
@@ -23,7 +23,7 @@ const schemaLogin = yup
   .required();
 
 const Login = () => {
-  const [loginUser, { data, error }] = useMutation(LOGIN_USER);
+  const [loginUser, { data }] = useMutation(LOGIN_USER);
 
   const [passwordType, setPasswordType] = useState(true);
   const [submitSuccess, setSubmitSuccess] = useState(false);
@@ -72,7 +72,6 @@ const Login = () => {
     setPasswordType(!passwordType);
   };
 
-  console.log("data:", data?.loginUser?.accessToken);
   return (
     <>
       <AlertGroup

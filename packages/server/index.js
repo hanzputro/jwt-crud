@@ -5,14 +5,13 @@ const {
   ApolloServerPluginDrainHttpServer,
 } = require("@apollo/server/plugin/drainHttpServer");
 const mongoose = require("mongoose");
-const dotenv = require("dotenv");
 const pkg = require("body-parser");
 const http = require("http");
 
 const typeDefs = require("./graphql/typeDefs");
 const resolvers = require("./graphql/resolvers");
 
-dotenv.config();
+require("dotenv").config();
 const app = express();
 
 const MONGODB = process.env.MONGODB_URL ?? "";
@@ -23,12 +22,22 @@ const httpServer = http.createServer(app);
 const server = new ApolloServer({
   typeDefs,
   resolvers,
-  context: ({ req }) => ({ req }),
   plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
 });
 
 startStandaloneServer(server, {
-  context: async ({ req }) => ({ token: req.headers.token }),
+  introspections: true,
+  context: async ({ req, res }) => {
+    // validating token before access to resolvers
+    // create token for login (1h) and token for data (30s)
+    const accessToken = req?.headers?.authorization || "";
+
+    return {
+      req,
+      res,
+      accessToken,
+    };
+  },
   listen: { port: 4000 },
 }).then(({ url }) => {
   mongoose

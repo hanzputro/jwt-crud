@@ -4,7 +4,7 @@ const userSchema = new Schema({
   username: { type: String },
   email: { type: String, unique: true },
   password: { type: String },
-  token: { type: String },
+  refreshToken: { type: String, default: null },
   products: {
     type: [
       {

@@ -6,7 +6,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { useNavigate } from "react-router-dom";
 import AlertGroup from "../components/AlertGroup";
-import { CREATE_USER } from "../services/mutation/user";
+import { CREATE_USER } from "../features/mutation/user";
 
 const schemaRegister = yup
   .object()

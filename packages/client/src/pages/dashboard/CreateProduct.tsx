@@ -4,8 +4,8 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import Modal from "../../components/Modal";
-import { CREATE_PRODUCT } from "../../services/mutation/product";
-import { GET_USER } from "../../services/query/user";
+import { CREATE_PRODUCT } from "../../features/mutation/product";
+import { GET_USER } from "../../features/query/user";
 import AlertGroup from "../../components/AlertGroup";
 import { AiFillPlusCircle } from "react-icons/ai";
 

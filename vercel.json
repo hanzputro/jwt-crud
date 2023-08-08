@@ -1,3 +1,24 @@
 {
-  "routes": [{ "src": "/[^.]+", "dest": "/", "status": 200 }]
+  "version": 2,
+  "scope": "my_own_vercel_scope",
+  "github": {
+    "enabled": false
+  },
+  "builds": [
+    {
+      "src": "/packages/server/index.js",
+      "use": "@now/node"
+    },
+    {
+      "src": "/packages/client/*",
+      "use": "@now/static"
+    }
+  ],
+  "routes": [
+    { "src": "/graphql/(.*)", "dest": "/packages/server/index.js" },
+    { "handle": "filesystem" },
+    { "src": "/assets/(.*)", "dest": "/packages/client/assets/＄1" },
+    { "src": "/(.*).(js|css|ico)", "dest": "/packages/client/＄1.＄2" },
+    { "src": "/(.*)", "dest": "/packages/client/index.html" }
+  ]
 }

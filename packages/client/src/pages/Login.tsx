@@ -23,7 +23,7 @@ const schemaLogin = yup
   .required();
 
 const Login = () => {
-  const [loginUser, { data }] = useMutation(LOGIN_USER);
+  const [loginUser] = useMutation(LOGIN_USER);
 
   const [passwordType, setPasswordType] = useState(true);
   const [submitSuccess, setSubmitSuccess] = useState(false);

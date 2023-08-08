@@ -1,26 +1,30 @@
-WIP
+WIP (Work In Progress)
+# JWT-CRUD 
 
 Purpose
 
-This repo is intended to demonstrate how we can leverage lerna to spin up a single dev environment that consists of multiple Apps in one go (monorepo).
+This monorepo is intended to demonstrate Json Web Token works with 2 token (refresh token & access token) to make authentication and authorization for login and data. mongodb bring graphql to process request and response the data from @apollo/server also connect with @apollo/client for store the data with redux to the client.
 
 Expectation
 
-From a dev perspective, you should now be able to:
-
-    Scaffold entire dev environment with just one "npm dev:both" or "yarn dev:both" command
-    Get the same Hot Module Reload (HMR) development experience
+Should be able to:
+    login with JWT technique (access token).
+    data protection (refresh token).
+    route protection.
+    CRUD functionality with search and pagination.
+    Scaffold entire dev environment with just one "npm dev:both" or "yarn dev:both" command.
+    Get the same Hot Module Reload (HMR) development experience.
 
 Samples Included
-
     server (Node JS)
     client (React App + vite)
 
 How To Run
-
     Run "npm install" or "yarn" in the root of the folder to install all the dependencies needed.
     Run "npm dev:both" or "yarn dev:both" to spin up all the services defined in the lerna.json
     You can now access apps each other in dev mode a. localhost:4000 (nodeJS) b. localhost:3000 (ReactJS + Vite)
+
+
 
 
 ## Server
@@ -32,6 +36,8 @@ Dependencies needed:
 - [@apollo/server](https://www.apollographql.com/docs/apollo-server/) The GraphQL server
 - [graphql](https://graphql.org/) GraphQL is a query language for APIs and a runtime for fulfilling those queries with your existing data
 - [mongoose](https://mongoosejs.com/) Mongoose is a JavaScript object-oriented programming library that creates a connection between MongoDB and the Node.js  
+
+
 
 
 ## Client
@@ -49,3 +55,8 @@ Dependencies needed:
 - [react-icons](https://react-icons.github.io/react-icons) simple react icons with SVG icon
 - [react-router-dom](https://reactrouter.com/) help us to make simple and powerfull routes system
 - [redux](https://redux-toolkit.js.org) state management
+
+
+
+
+

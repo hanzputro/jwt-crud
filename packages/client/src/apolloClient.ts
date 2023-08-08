@@ -4,7 +4,7 @@ const ENDPOINT_URL = import.meta.env.VITE_VERCEL_URL
   ? `https://${import.meta.env.VITE_VERCEL_URL}`
   : `http://localhost:4000`;
 
-console.log("ENDPOINT_URL:", ENDPOINT_URL);
+console.log("ENDPOINT_URL:", ENDPOINT_URL, import.meta.env.VITE_VERCEL_URL);
 
 const link = createHttpLink({
   uri: ENDPOINT_URL,

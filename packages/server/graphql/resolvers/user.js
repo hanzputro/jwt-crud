@@ -1,7 +1,7 @@
 const { GraphQLError } = require("graphql");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
-
+const { verifyToken } = require("../../utils/token.js");
 const User = require("../../models/User");
 
 module.exports = {
@@ -11,14 +11,24 @@ module.exports = {
       return user;
     },
 
-    async getUsers() {
+    async getUsers(_, {}, context) {
       const users = await User.find({}).populate("products");
+      const decodeEmail = (decoded) => {
+        context.req.email = decoded.email;
+      };
+
+      verifyToken(
+        context.accessToken,
+        process.env.ACCESS_TOKEN_SECRET,
+        decodeEmail
+      );
+
       return users;
     },
   },
 
   Mutation: {
-    async createRegister(_, { username, email, password }) {
+    async createUser(_, { username, email, password }) {
       // check old user
       const oldUser = await User.findOne({ email });
       if (oldUser) {
@@ -35,19 +45,6 @@ module.exports = {
         password: encrytedPassword,
       });
 
-      // access token
-      const accessToken = jwt.sign(
-        {
-          userId: newUser._id,
-          email,
-        },
-        process.env.ACCESS_TOKEN_SECRET,
-        {
-          expiresIn: "2h",
-        }
-      );
-
-      newUser.token = accessToken;
       const res = await newUser.save();
 
       return {
@@ -56,7 +53,7 @@ module.exports = {
       };
     },
 
-    async createLogin(_, { email, password }, { req }) {
+    async loginUser(_, { email, password }, context) {
       // find user
       const user = await User.findOne({ email });
       // check password
@@ -67,34 +64,65 @@ module.exports = {
           throw new GraphQLError(`Incorrect password!`, "INCORRECT_PASSWORD");
         }
 
-        // access token
-        const accessToken = jwt.sign(
+        const refreshToken = jwt.sign(
           { userId: user._id, email },
-          process.env.ACCESS_TOKEN_SECRET,
+          process.env.REFRESH_TOKEN_SECRET,
           {
             expiresIn: "1h",
           }
         );
 
         const oneHour = 1 * 60 * 60 * 1000;
-
-        const cookie = req.response.cookie("refreshToken", accessToken, {
+        context.res.cookie("refreshToken", refreshToken, {
           maxAge: oneHour,
           httpOnly: true, // cookie is only accessible by the server not the client side
           secure: process.env.NODE_ENV === "production", // only transferred over https
           // sameSite: true, // only sent for requests to the same FQDN as the domain in the cookie
         });
 
-        // saven token
-        user.token = accessToken;
+        const accessToken = jwt.sign(
+          { userId: user._id, email },
+          process.env.ACCESS_TOKEN_SECRET,
+          {
+            expiresIn: "30s",
+          }
+        );
+
+        await user.updateOne({
+          refreshToken,
+        });
 
         return {
-          id: user.id,
-          ...user._doc,
+          accessToken,
         };
       } else {
         throw new GraphQLError("Incorrect email!", "INCORRECT_EMAIL");
       }
+    },
+
+    async logoutUser(_, {}, context) {
+      const refreshToken = context.req.headers.cookie?.split("=")?.pop() ?? "";
+
+      if (!refreshToken) {
+        throw new GraphQLError("No Content!", {
+          extensions: { http: { status: 204 } },
+        });
+      }
+
+      const user = await User.findOne({ refreshToken });
+
+      if (!user) {
+        throw new GraphQLError("No Content!", {
+          extensions: { http: { status: 204 } },
+        });
+      }
+
+      await context.res.clearCookie("refreshToken");
+      await user.updateOne({ refreshToken: null });
+
+      return {
+        refreshToken,
+      };
     },
   },
 };

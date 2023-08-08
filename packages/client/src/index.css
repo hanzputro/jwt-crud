@@ -17,6 +17,11 @@ body,
   @apply bg-zinc-900 text-gray-300;
 }
 
+.smoothWrap {
+  backface-visibility: hidden;
+  transform: translate3D(0, 0, 0);
+}
+
 .background-animate {
   background-size: 400%;
   animation: AnimationName 15s ease infinite;

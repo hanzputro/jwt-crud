@@ -77,7 +77,7 @@ module.exports = {
           maxAge: oneHour,
           httpOnly: true, // cookie is only accessible by the server not the client side
           secure: process.env.NODE_ENV === "production", // only transferred over https
-          // sameSite: true, // only sent for requests to the same FQDN as the domain in the cookie
+          sameSite: true, // only sent for requests to the same FQDN as the domain in the cookie
         });
 
         const accessToken = jwt.sign(

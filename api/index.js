@@ -40,7 +40,7 @@ const startApolloServer = async (app, httpServer) => {
     });
 
   const ORIGIN_URL = process.env.VERCEL_URL
-    ? `https://${process.env.VERCEL_URL}/api/graphql`
+    ? `https://${process.env.VERCEL_URL}`
     : `http://localhost:3000`;
 
   app.use(

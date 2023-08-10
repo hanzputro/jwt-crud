@@ -56,7 +56,7 @@ const Login = () => {
         setSubmitSuccess(true);
         setTimeout(() => {
           setSubmitSuccess(false);
-          navigate("/home");
+          navigate("/dashboard");
         }, 2000);
       })
       .catch((err) => {

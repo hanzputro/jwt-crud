@@ -20,16 +20,28 @@ const MONGODB = process.env.MONGODB_URL ?? "";
 // create a new server object via the http module's
 const httpServer = http.createServer(app);
 
-const server = new ApolloServer({
-  typeDefs,
-  resolvers,
-  plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
-});
+const startApolloServer = async (app, httpServer) => {
+  const server = new ApolloServer({
+    typeDefs,
+    resolvers,
+    plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
+  });
 
-server.start().then(() => {
+  await server.start();
+
+  mongoose
+    .set("strictQuery", false)
+    .connect(MONGODB, { useNewUrlParser: true, useUnifiedTopology: true })
+    .then(() => {
+      console.log(`MongoDB Connected`);
+    })
+    .catch((err) => {
+      console.log(err.message);
+    });
+
   app.use(
-    "/graphql",
-    cors({ origin: true, credentials: true }),
+    "/api/graphql",
+    cors({ origin: `https://${process.env.VERCEL_URL}`, credentials: true }),
     // 50mb is the limit that `startStandaloneServer` uses, but you may configure this to suit your needs
     bodyParser.json({ limit: "50mb" }),
     expressMiddleware(server, {
@@ -47,17 +59,8 @@ server.start().then(() => {
       },
     })
   );
+};
 
-  mongoose
-    .set("strictQuery", false)
-    .connect(MONGODB, { useNewUrlParser: true, useUnifiedTopology: true })
-    .then(() => {
-      console.log(`MongoDB Connected`);
+startApolloServer(app, httpServer);
 
-      httpServer.listen({ port: 4000 });
-      console.log(`🚀 Server ready at  http://localhost:4000/graphql`);
-    })
-    .catch((err) => {
-      console.log(err.message);
-    });
-});
+module.exports = httpServer;

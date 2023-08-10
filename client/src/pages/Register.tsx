@@ -34,6 +34,7 @@ const Register = () => {
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [formError, setFormError] = useState(false);
   const [messageError, setMessageError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
 
@@ -52,6 +53,7 @@ const Register = () => {
   }
 
   const onSubmit = (data: submitType) => {
+    setLoading(true);
     createUser({
       variables: {
         username: data.username,
@@ -63,6 +65,7 @@ const Register = () => {
         setSubmitSuccess(true);
         setTimeout(() => {
           setSubmitSuccess(false);
+          setLoading(false);
           navigate("/");
         }, 2000);
       })
@@ -71,6 +74,7 @@ const Register = () => {
         setFormError(true);
         setTimeout(() => {
           setFormError(false);
+          setLoading(false);
         }, 2000);
       });
   };
@@ -86,12 +90,12 @@ const Register = () => {
         messageSuccess="Your register has been succeeded!"
         statusError={formError}
         statusSuccess={submitSuccess}
-        statusLoading={submitSuccess}
+        statusLoading={loading}
       />
 
       <div
         className={`flex items-center h-full ${
-          submitSuccess && "pointer-events-none"
+          loading && "pointer-events-none"
         }`}
       >
         <div className="w-1/2 h-full bg-gradient-to-r from-teal-400 to-indigo-400 flex flex-col justify-center items-center">

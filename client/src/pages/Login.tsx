@@ -29,6 +29,7 @@ const Login = () => {
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [formError, setFormError] = useState(false);
   const [messageError, setMessageError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
 
@@ -46,6 +47,7 @@ const Login = () => {
   }
 
   const onSubmit = (data: submitType) => {
+    setLoading(true);
     loginUser({
       variables: {
         email: data.email,
@@ -56,6 +58,7 @@ const Login = () => {
         setSubmitSuccess(true);
         setTimeout(() => {
           setSubmitSuccess(false);
+          setLoading(false);
           navigate("/dashboard");
         }, 2000);
       })
@@ -64,6 +67,7 @@ const Login = () => {
         setFormError(true);
         setTimeout(() => {
           setFormError(false);
+          setLoading(false);
         }, 2000);
       });
   };
@@ -79,12 +83,12 @@ const Login = () => {
         messageSuccess="Your login has been succeeded!"
         statusError={formError}
         statusSuccess={submitSuccess}
-        statusLoading={submitSuccess}
+        statusLoading={loading}
       />
 
       <div
         className={`flex items-center h-full ${
-          submitSuccess && "pointer-events-none"
+          loading && "pointer-events-none"
         }`}
       >
         <div className="w-1/2 h-full bg-gradient-to-r from-indigo-400 to-teal-400 flex flex-col justify-center items-center">

@@ -39,12 +39,13 @@ const startApolloServer = async (app, httpServer) => {
       console.log(err.message);
     });
 
+  const ORIGIN_URL = process.env.VERCEL_URL
+    ? `https://${process.env.VERCEL_URL}`
+    : `http://localhost:3000`;
+
   app.use(
     "/api/graphql",
-    cors({
-      origin: `https://${process.env.VERCEL_URL}/api/graphql`,
-      credentials: true,
-    }),
+    cors({ origin: ORIGIN_URL, credentials: true }),
     // 50mb is the limit that `startStandaloneServer` uses, but you may configure this to suit your needs
     bodyParser.json({ limit: "50mb" }),
     expressMiddleware(server, {
